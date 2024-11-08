@@ -1,0 +1,162 @@
+/* Navigation Bar Container */
+.navbar {
+  width: 100%;
+  height: 70px;
+  z-index: 5;
+  color: var(--color-white);
+  border-bottom: var(--brd2);
+}
+
+/* Inner container for navigation elements */
+.navbarInner {
+  width: 70%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Menu icon for mobile view */
+.menuBar {
+  width: 20px;
+  height: 20px;
+  display: none; /* Hidden by default for larger screens */
+  margin: 20px;
+  filter: brightness(0) invert(1); /* Ensures icon contrast */
+  cursor: pointer;
+}
+
+/* Full-screen mobile menu */
+.mobileMenu {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  background-color: var(--bg-white);
+}
+
+/* Flex containers for alignment */
+.leftSide,
+.rightSide {
+  display: flex;
+  align-items: center;
+}
+
+.leftSide {
+  cursor: pointer;
+}
+
+/* App logo and title styling */
+.appTxt {
+  color: var(--color-title-text);
+  font-size: 2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Individual menu items */
+.menuItem {
+  color: var(--color-p2-text);
+  text-decoration: none;
+  margin-right: 1rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/* Profile container for avatar and dropdown menu */
+.profile {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profilePic {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+/* Dropdown menu container */
+.menu {
+  position: absolute;
+  top: 60px;
+  width: 200px;
+  border-radius: 10px;
+  background-color: var(--color-white);
+  display: none; /* Hidden by default */
+  z-index: 1;
+}
+
+/* Show menu on hover */
+.profile:hover .menu {
+  display: block;
+}
+
+/* Dropdown menu links */
+.menuItemLink {
+  padding: 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Top and bottom border radius for dropdown */
+.menuItemLinkTxt:first-child > .menuItemLink {
+  border-radius: 10px 10px 0 0;
+}
+
+.menuItemLinkTxt:last-child > .menuItemLink {
+  border-radius: 0 0 10px 10px;
+}
+
+/* Hover effect for dropdown items */
+.menuItemLink:hover {
+  background-color: var(--bg-ash);
+}
+
+.menuItemLinkTxt {
+  width: 100%;
+  color: var(--color-title-text);
+  font-weight: 350;
+  text-decoration: none;
+}
+
+/* Modals for Login/Signup */
+.modals {
+  position: fixed; /* Fixed to viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+  display: flex; /* Flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  z-index: 10; /* Above other content */
+}
+
+/* Login container styling */
+.login-container {
+  background-color: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 300px; /* Fixed width */
+}
+
+/* Close icon styling */
+.close-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+}

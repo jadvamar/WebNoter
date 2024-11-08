@@ -1,0 +1,70 @@
+html,
+body {
+  height: 100%; /* Full height to enable vertical centering */
+  margin: 0; /* Remove default margin */
+  display: flex; /* Use flexbox for centering */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  background-color: #f8f9fa; /* Optional: background color for contrast */
+}
+
+.signup-container {
+  max-width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  position: relative; /* Optional: background color for the container */
+}
+
+.signup-container h2 {
+  margin-bottom: 20px;
+  text-align: center; /* Center align the heading */
+}
+
+.signup-container input {
+  width: 100%; /* Ensure the input box takes full width of container */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  text-align: center; /* Center align the text inside the input box */
+}
+
+.signup-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-container .login-link {
+  text-align: center; /* Center align the text */
+  margin-top: 15px;
+}
+
+.signup-container .login-link a {
+  color: #007bff; /* Link color */
+  text-decoration: none; /* Remove underline */
+}
+
+.signup-container .login-link a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+.close-icon {
+  position: absolute;
+  top: 10px; /* Adjust as necessary */
+  right: 10px; /* Adjust as necessary */
+  width: 13px; /* Adjust the size as necessary */
+  cursor: pointer;
+}
+/* Media Queries for Responsive Design */
+@media (max-width: 400px) {
+  .signup-container {
+    max-width: 90%; /* Allow more width on small screens */
+  }
+}

@@ -1,0 +1,62 @@
+
+
+# Ignore node_modules and build in the frontend folder
+/frontend/node_modules/
+/frontend/build/
+/frontend/dist/
+/frontend/.env
+/frontend/.DS_Store
+
+# Ignore target, IDE files, and logs in the backend folder (Spring Boot)
+# Java/Spring Boot
+/backend/target/
+/backend/bin/
+/backend/.mvn/
+/backend/.idea/
+/backend/.classpath
+/backend/.project
+/backend/*.iml
+/backend/*.log
+/backend/*.war
+/backend/*.jar
+/backend/*.class
+/backend/**/logs/
+/backend/**/target/
+/backend/**/out/
+
+# Ignore OS-specific files
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+*.lock
+
+# MacOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDEs
+/frontend/.vscode/
+/frontend/*.code-workspace
+/backend/.idea/
+/backend/*.suo
+/backend/*.ntvs
+/backend/*.njsproj
+/backend/*.sln
+/backend/*.pssproj
+
+# Maven specific files in backend
+/backend/pom.xml.tag
+/backend/pom.xml.releaseBackup
+/backend/pom.xml.versionsBackup
+/backend/pom.xml.next
+/backend/release.properties
