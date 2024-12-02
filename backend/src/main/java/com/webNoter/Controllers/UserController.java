@@ -3,11 +3,14 @@ package com.webNoter.Controllers;
 
 import com.webNoter.DTO.JwtRequestDTO;
 import com.webNoter.DTO.JwtResponseDTO;
+import com.webNoter.DTO.PasswordDTO;
 import com.webNoter.DTO.UserDTO;
 import com.webNoter.Entity.User;
 import com.webNoter.Security.JwtHelper;
+import com.webNoter.Services.OtpService;
 import com.webNoter.Services.TokenValidationService;
 import com.webNoter.Services.UserService;
+import org.apache.catalina.mbeans.SparseUserDatabaseMBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -44,11 +49,69 @@ public class UserController {
 
 
     //----------------------------------------------------------------------
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+//        String email = request.get("email");
+
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required!");
+        }
+
+        System.out.println("email ------------" + email);
+
+        String response = userService.validate(email);
+        if (Objects.equals(response, "user not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found this user.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("OTP has been sent to your email.");
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody PasswordDTO passwordDTO) {
+        String email = passwordDTO.getEmail();
+        String otp = passwordDTO.getOtp();
+
+        if (email == null || email.isEmpty() || otp == null || otp.isEmpty()) {
+            return ResponseEntity.badRequest().body("Email and OTP are required!");
+        }
+
+        boolean isValid = userService.verifyOTp(email, otp);
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
+        }
+
+        return ResponseEntity.ok("OTP validated successfully");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String newPassword = request.get("newPassword");
+        System.out.println(email+" "+newPassword);
+
+        if (email == null || email.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and new password are required!");
+        }
+
+        String response = userService.updatePassword(newPassword, email);
+        if ("user not found".equalsIgnoreCase(response)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+
+        return ResponseEntity.ok("Password updated successfully.");
+    }
+
     @PostMapping(path = "/signup")
     public ResponseEntity<String> signupUser(@RequestBody UserDTO userDTO) {
         System.out.println("signup------------------------------------------------------------------");
-        String response = userService.signupUser(userDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        try {
+            String response = userService.signupUser(userDTO);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            // Return a 409 Conflict response if the user already exists
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping(path = "/validateToken")

@@ -2,20 +2,43 @@ import React, { useState } from "react";
 import closeIcon from "../../../images/close.png"; // Adjust the path as necessary
 import "./Signup.css";
 
-function Signup({ onClose }) {
+function Signup({ onClose, onToggle }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [reenterPassword, setReenterPassword] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" }); // Unified for success and error messages
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setMessage({ type: "", text: "" });
 
-    if (!name || !email || !password) {
-      setError("All fields are required!");
+    // Validation checks
+    if (!name || !email || !password || !reenterPassword) {
+      setMessage({ type: "error", text: "All fields are required!" });
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setMessage({
+        type: "error",
+        text: "Please enter a valid email address.",
+      });
+      return;
+    }
+    if (password.length < 8) {
+      setMessage({
+        type: "error",
+        text: "Password must be at least 8 characters long.",
+      });
+      return;
+    }
+    if (password !== reenterPassword) {
+      setMessage({ type: "error", text: "Passwords do not match." });
       return;
     }
 
@@ -29,17 +52,26 @@ function Signup({ onClose }) {
       });
 
       if (response.ok) {
-        setSuccess("Signup successful!");
+        setMessage({ type: "success", text: "Signup successful!" });
         setName("");
         setEmail("");
         setPassword("");
+        setReenterPassword("");
+      } else if (response.status === 409) {
+        // HTTP 409 Conflict indicates user already exists
+        setMessage({
+          type: "error",
+          text: "User already exists. Please use a different email.",
+        });
       } else {
         const data = await response.json();
-        setError(data.message || "Signup failed!");
+        setMessage({ type: "error", text: data.message || "Signup failed!" });
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
-      console.error("Error:", error);
+      setMessage({
+        type: "error",
+        text: "An error occurred. Please try again later.",
+      });
     }
   };
 
@@ -52,7 +84,12 @@ function Signup({ onClose }) {
         onClick={onClose}
       />
       <h2>Signup</h2>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSubmit(e);
+        }}
+      >
         <input
           type="text"
           placeholder="Name"
@@ -74,13 +111,30 @@ function Signup({ onClose }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <p className="error-message">{error}</p>}
-        {success && <p className="success-message">{success}</p>}
+        <input
+          type="password"
+          placeholder="Re-enter Password"
+          value={reenterPassword}
+          onChange={(e) => setReenterPassword(e.target.value)}
+          required
+        />
+        {message.text && (
+          <p
+            className={`message ${
+              message.type === "success" ? "success-message" : "error-message"
+            }`}
+          >
+            {message.text}
+          </p>
+        )}
         <button type="submit">Signup</button>
       </form>
-      <p className="login-link">
-        Already have an account? <a onClick={onClose}>Login here</a>
-      </p>
+      <div className="newToZomato">
+        Already have an account?{" "}
+        <div className="createAcc" onClick={onToggle}>
+          Log in
+        </div>
+      </div>
     </div>
   );
 }

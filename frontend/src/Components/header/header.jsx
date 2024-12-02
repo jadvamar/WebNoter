@@ -8,6 +8,8 @@ import Login from "../Auth/Login/Login";
 import Signup from "../Auth/Signup/Signup";
 import css from "./header.module.css";
 
+import pro from "../../images/pro.png";
+
 const NavigationBar = () => {
   const { user, logoutUser } = useContext(UserContext);
   const [menuDisplay, setMenuDisplay] = useState(false);
@@ -51,18 +53,20 @@ const NavigationBar = () => {
                 onClick={() => setMenuDisplay((val) => !val)}
               >
                 <span>{user.name}</span>
-                {/* <img
-                  src={profilePic}
-                  alt="profile pic"
-                  className={css.profilePic}
-                /> */}
+                <img src={pro} alt="profile pic" className={css.profilePic} />
                 <img src={downArrow} alt="arrow" className={css.arrow} />
               </div>
               <div
                 className={css.menu}
                 style={{ display: menuDisplay ? "block" : "none" }}
               >
-                <div className={css.menuItemLinkTxt} onClick={logoutUser}>
+                <div
+                  className={css.menuItemLinkTxt}
+                  onClick={() => {
+                    logoutUser();
+                    setMenuDisplay(false); // Close menu after logout
+                  }}
+                >
                   <div className={css.menuItemLink}>Logout</div>
                 </div>
               </div>

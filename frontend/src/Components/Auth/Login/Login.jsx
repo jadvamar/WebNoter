@@ -2,12 +2,14 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "../../Contexts/UserContext";
 import "./Login.css";
 import closeIcon from "../../../images/close.png";
+import ForgotPassword from "../../ForgetPassword/ForgetPassword"; // Import the new module
 
-function Login({ onClose }) {
+function Login({ onClose, onToggle }) {
   const { loginUser } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false); // Manage the "Forgot Password" flow
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,13 +32,17 @@ function Login({ onClose }) {
       }
 
       const data = await response.json();
-      console.log(data);
       loginUser({ email: data.email, token: data.token, name: data.name });
+      window.location.reload();
       onClose();
     } catch (error) {
       setError(error.message || "Something went wrong!");
     }
   };
+
+  if (showForgotPassword) {
+    return <ForgotPassword onClose={onClose} />;
+  }
 
   return (
     <div className="login-container">
@@ -47,7 +53,10 @@ function Login({ onClose }) {
         onClick={onClose}
       />
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+      >
         <input
           type="email"
           placeholder="Email"
@@ -65,7 +74,17 @@ function Login({ onClose }) {
         {error && <p className="error-message">{error}</p>}
         <button type="submit">Login</button>
       </form>
-      <a href="/signup">Create a new account</a>
+      <div className="extra-options">
+        <div className={"newToZomato"}>
+          Create a new account?{" "}
+          <div className={"createAcc"} onClick={onToggle}>
+            Signup
+          </div>
+        </div>
+        <p onClick={() => setShowForgotPassword(true)} className="forgot-link">
+          Forgot Password?
+        </p>
+      </div>
     </div>
   );
 }

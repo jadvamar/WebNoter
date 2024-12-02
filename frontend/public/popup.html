@@ -1,14 +1,16 @@
-<!-- public/popup.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Extension Popup</title>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <div id="popup-root"></div>
-    <script src="../src/popup.js"></script>
-    <!-- Point to the popup bundle -->
+    <div id="popup-root">
+      <!-- Add loading indicator in case React takes a moment to load -->
+      <div class="loading">Loading...</div>
+    </div>
+    <script src="popup.js"></script>
   </body>
 </html>

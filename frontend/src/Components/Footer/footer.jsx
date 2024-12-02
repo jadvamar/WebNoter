@@ -4,11 +4,11 @@ import Gstore from "../../images/image.png";
 import Appstore from "../../images/image.png";
 import indianFlag from "../../images/image.png";
 
-import Facebook from "../../images/image.png";
-import Twitter from "../../images/image.png";
-import Instagram from "../../images/image.png";
-import Linkedin from "../../images/image.png";
-import Youtube from "../../images/image.png";
+import Facebook from "../../images/facebook.png";
+import Twitter from "../../images/twitter.png";
+import Instagram from "../../images/instagram.png";
+import Linkedin from "../../images/linkedin.png";
+import Youtube from "../../images/youtube.png";
 
 let Footer = () => {
   return (
@@ -136,7 +136,7 @@ let Footer = () => {
                 />
               </a>
             </div>
-            <a href="" className={footerCss.app}>
+            {/* <a href="" className={footerCss.app}>
               <img
                 className={footerCss.appImg}
                 src={Gstore}
@@ -149,7 +149,7 @@ let Footer = () => {
                 src={Appstore}
                 alt="apple app store"
               />
-            </a>
+            </a> */}
           </div>
         </div>
         <hr className={footerCss.breakLine} />

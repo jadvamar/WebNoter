@@ -1,5 +1,5 @@
 import React from "react";
-import Extension from "./Components/Extension/Extension";
+import Extension from "../src/Components/Extension/Extension";
 
 function Popup2() {
   return (

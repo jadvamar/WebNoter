@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import Login from "./Login"; // Adjust the path as necessary
-import Signup from "./Signup"; // Adjust the path as necessary
-import "./Auth.css"; // Common styles for authentication components
+import Login from "./Login";
+import Signup from "./Signup";
+import "./Auth.css";
 
 function Auth() {
-  const [isLogin, setIsLogin] = useState(true); // Track which form to show
+  const [isLogin, setIsLogin] = useState(true);
 
+  // Toggle function to switch between login and signup forms
   const toggleForm = () => {
-    setIsLogin(!isLogin); // Toggle between login and signup
+    setIsLogin((prevState) => !prevState);
   };
 
   return (
     <div className="auth-container">
       {isLogin ? (
-        <Login onClose={toggleForm} />
+        <Login onClose={() => setIsLogin(false)} onToggle={toggleForm} />
       ) : (
-        <Signup onClose={toggleForm} />
+        <Signup onClose={() => setIsLogin(true)} onToggle={toggleForm} />
       )}
     </div>
   );

@@ -12,7 +12,7 @@ public class SubFolders {
     @Id
     private String id;
 
-    private String projectName;
+    private String subFolderName;
 
     private String projectId;
 }

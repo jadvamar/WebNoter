@@ -3,16 +3,19 @@ package com.webNoter.DTO;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class NotesDataDTO {
-    private String Id;
+    private String id;
 
-    private String Link;
+    private String link;
 
     private String heading;
 
     private String description;
 
     private Date date;
+
+    private String subFolderId;
 }

@@ -1,55 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./MainContent.css";
-import AddCandidate from "../AddCandidate/AddCandidate"; // Import the AddCandidate component
+import AddSubfolder from "../AddSubfolder/AddsubFolder";
+import AddCandidate from "../AddCandidate/AddCandidate";
+import ProjectDetail from "../ProjectDetail/ProjectDetail";
 import Cookies from "js-cookie";
+import { UserContext } from "../Contexts/UserContext";
 
 function MainContent() {
+  const { loginUser } = useContext(UserContext);
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
   const [subfolderVisibility, setSubfolderVisibility] = useState({});
-  const [showAddCandidate, setShowAddCandidate] = useState(false); // State to manage the modal visibility
+  const [showAddSubfolder, setShowAddSubfolder] = useState(false);
+  const [showAddCandidate, setShowAddCandidate] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [error, setError] = useState("");
+  const [error2, setError2] = useState("");
 
-  // Fetch projects when component loads
   useEffect(() => {
-    const fetchProjects = async () => {
-      const token = Cookies.get("token"); // Retrieve token from cookies
-      const email = Cookies.get("email"); // Get the email from cookies or context
-
-      try {
-        const response = await fetch(
-          `http://localhost:8085/project/getProjects?email=${email}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Send token in Authorization header
-            },
-          }
-        );
-
-        // Ensure the response is valid
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-
-        const projectData = await response.json();
-        console.log("Fetched Projects:", projectData); // Log to inspect
-
-        // Update state with the fetched data
-        setProjects(projectData);
-        console.log(projects);
-      } catch (error) {
-        console.error("Error fetching projects:", error.message);
-      }
-    };
-
     fetchProjects();
   }, []);
 
+  const fetchProjects = async () => {
+    const token = Cookies.get("token");
+    const email = Cookies.get("email");
+    if (!token || !email) return; // Skip fetching if not logged in
+
+    try {
+      const response = await fetch(
+        `http://localhost:8085/project/getProjects?email=${email}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch projects");
+
+      const projectData = await response.json();
+      setProjects(projectData);
+    } catch (error) {
+      console.error("Error fetching projects:", error.message);
+    }
+  };
+
   const handleAddProject = async () => {
     if (projectName.trim()) {
-      const token = Cookies.get("token"); // Retrieve the token from cookies
-
+      const token = Cookies.get("token");
       try {
         const response = await fetch(
           "http://localhost:8085/project/addProject",
@@ -57,23 +60,30 @@ function MainContent() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Send token in Authorization header
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               name: projectName,
-              email: Cookies.get("email"), // Send email to backend
+              email: Cookies.get("email"),
             }),
           }
         );
 
-        const newProject = await response.json(); // Directly parse the JSON response
-
-        // Add the new project to the state
-        setProjects((prevProjects) => [...prevProjects, newProject]);
-        setProjectName(""); // Clear the input field after adding the project
+        if (response.ok) {
+          setError("Project added successfully");
+          setProjectName("");
+          fetchProjects();
+          return;
+        } else if (response.status === 409) {
+          setError("Project already exists");
+        } else {
+          setError("Error occurred while adding new project");
+        }
       } catch (error) {
         console.error("Error adding project:", error.message);
       }
+    } else {
+      setError("Project name cannot be empty.");
     }
   };
 
@@ -84,40 +94,121 @@ function MainContent() {
     }));
   };
 
-  const toggleAddCandidateModal = () => {
-    setShowAddCandidate(!showAddCandidate); // Toggle modal visibility
+  const openAddSubfolderModal = (projectId, projectName) => {
+    setSelectedProjectId(projectId);
+    setSelectedProjectName(projectName);
+    setShowAddSubfolder(true);
+  };
+
+  const toggleAddCandidateModal = (projectId) => {
+    setSelectedProjectId(projectId);
+    setShowAddCandidate(!showAddCandidate);
+  };
+
+  const handleCloseSubfolderModal = () => {
+    setShowAddSubfolder(false);
+    setSelectedProjectId(null);
+    setSelectedProjectName("");
+  };
+
+  const handleSubfolderAdded = (newSubfolder) => {
+    setProjects((prevProjects) =>
+      prevProjects.map((proj) =>
+        proj.id === newSubfolder.projectId
+          ? { ...proj, subfolders: [...(proj.subfolders || []), newSubfolder] }
+          : proj
+      )
+    );
+  };
+
+  const handleProjectButtonClick = (projectId) => {
+    setSelectedProjectId(projectId);
+  };
+
+  const confirmDeleteProject = (projectId) => {
+    setProjectToDelete(projectId);
+    setShowDeletePopup(true);
+  };
+
+  const deleteProject = async () => {
+    const token = Cookies.get("token");
+    const email = Cookies.get("email");
+    try {
+      const response = await fetch("http://localhost:8085/project/remove", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ useremail: email, projectId: projectToDelete }),
+      });
+
+      if (response.ok) {
+        setProjects((prevProjects) =>
+          prevProjects.filter((project) => project.id !== projectToDelete)
+        );
+        setShowDeletePopup(false);
+        setProjectToDelete(null);
+        setError("");
+      } else if (response.status === 409) {
+        setError("Only admin can delete this project");
+      } else {
+        setError("Failed to delete project.");
+      }
+    } catch (error) {
+      console.error("Error deleting project:", error.message);
+      setError("Error deleting project. Please try again.");
+    }
+  };
+
+  const closeDeletePopup = () => {
+    setShowDeletePopup(false);
+    setError("");
   };
 
   return (
     <div className="main-content">
-      {/* Left Section - 30% width with links */}
       <div className="left-section">
         <h2>Projects</h2>
-        <div className="link-actions">
-          <button onClick={toggleAddCandidateModal}>Add Candidates</button>
-        </div>
-
-        {/* Dynamically render project links */}
-        {projects.length > 0 ? (
+        {projects.length === 0 ? (
+          loginUser ? (
+            <p>Please create a project</p>
+          ) : (
+            <p>Please login</p>
+          )
+        ) : (
           projects.map((project) => (
-            <div key={project.id}>
-              <button onClick={() => toggleSubfolder(project.id)}>
-                {project.projectName} {/* Display project name */}
+            <div key={project.id} className="project-container">
+              <button
+                onClick={() => {
+                  toggleSubfolder(project.id);
+                  handleProjectButtonClick(project.id);
+                }}
+              >
+                {project.projectName}
               </button>
               {subfolderVisibility[project.id] && (
-                <div className="subfolder-list">
-                  <button className="subfolder-button">Subfolder A</button>
-                  <button className="subfolder-button">Subfolder B</button>
+                <div className="actions">
+                  <button
+                    onClick={() =>
+                      openAddSubfolderModal(project.id, project.projectName)
+                    }
+                  >
+                    Add Folder
+                  </button>
+                  <button onClick={() => toggleAddCandidateModal(project.id)}>
+                    Add Candidates
+                  </button>
+                  <button onClick={() => confirmDeleteProject(project.id)}>
+                    Delete Project
+                  </button>
                 </div>
               )}
             </div>
           ))
-        ) : (
-          <p>No projects available</p> // Message to show if no projects are available
         )}
       </div>
 
-      {/* Right Section - 70% width with "Add Project" */}
       <div className="right-section">
         <div className="add-project">
           <input
@@ -126,20 +217,57 @@ function MainContent() {
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
+          {error && <div className="error-message">{error}</div>}
           <button onClick={handleAddProject}>Add Project</button>
+        </div>
+        <div className="project-detail-container">
+          <ProjectDetail projectId={selectedProjectId} />
         </div>
       </div>
 
-      {/* Add Candidate Modal Popup */}
-      {showAddCandidate && (
+      {showDeletePopup && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-button" onClick={toggleAddCandidateModal}>
+            <h3>
+              Are you sure you want to delete {selectedProjectName} this
+              project?
+            </h3>
+            {error2 && <div className="error-message">{error2}</div>}
+            <button onClick={deleteProject}>Yes</button>
+            <button onClick={closeDeletePopup}>No</button>
+          </div>
+        </div>
+      )}
+
+      {showAddSubfolder && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="close-button"
+              onClick={() => setShowAddSubfolder(false)}
+            >
               X
             </button>
-            <div className="amar">
-              <AddCandidate />
-            </div>
+            <AddSubfolder
+              projectId={selectedProjectId}
+              onClose={handleCloseSubfolderModal}
+              onSubfolderAdded={handleSubfolderAdded}
+              projectName={selectedProjectName}
+            />
+          </div>
+        </div>
+      )}
+
+      {showAddCandidate && selectedProjectId && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="close-button"
+              onClick={() => setShowAddCandidate(false)}
+            >
+              X
+            </button>
+            <AddCandidate projectId={selectedProjectId} />
           </div>
         </div>
       )}

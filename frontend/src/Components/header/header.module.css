@@ -99,6 +99,7 @@
   padding: 0.6rem;
   cursor: pointer;
   font-size: 1rem;
+  margin-top: -0.2rem; /* Adjust this value to move the element upwards */
 }
 
 /* Top and bottom border radius for dropdown */
@@ -120,6 +121,8 @@
   color: var(--color-title-text);
   font-weight: 350;
   text-decoration: none;
+  /* Adjust the top margin to move the text box up */
+  margin-top: -0.2rem; /* Apply negative margin to the text box */
 }
 
 /* Modals for Login/Signup */
@@ -154,7 +157,14 @@
   right: 10px;
   top: 10px;
 }
-
+.profilePic {
+  margin-left: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border-color: black;
+  border: 10px;
+}
 /* Error message styling */
 .error-message {
   color: red;

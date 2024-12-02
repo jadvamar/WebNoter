@@ -104,6 +104,7 @@ export const UserProvider = ({ children }) => {
   // Function to log out the user and clear cookies
   const logoutUser = () => {
     clearCookies();
+    window.location.reload();
   };
 
   return (

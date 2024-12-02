@@ -2,6 +2,7 @@ package com.webNoter.Entity;
 
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class NotesData {
 
     @Id
-    private String Id;
+    private ObjectId id;
 
     private String Link;
 
@@ -23,5 +24,5 @@ public class NotesData {
 
     private Date date;
 
-    private List<String> subFolderId;
+    private String subFolderId;
 }

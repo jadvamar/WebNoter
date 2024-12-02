@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -50,7 +51,7 @@ public class ProjectController {
         System.out.println("addProject-------------------------");
         try {
             // Check if the project already exists
-            if (projectSerevice.projectExists(projectRequest.getName())) {
+            if (projectSerevice.projectExists(projectRequest.getName(), projectRequest.getEmail())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("A project with this name already exists.");
             }
@@ -58,7 +59,7 @@ public class ProjectController {
             // Add project if it doesn't exist
             boolean added = projectSerevice.addProject(projectRequest.getName(), projectRequest.getEmail());
             if (added) {
-                return ResponseEntity.status(HttpStatus.CREATED)
+                return ResponseEntity.status(HttpStatus.OK)
                         .body("Project added successfully.");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -71,4 +72,29 @@ public class ProjectController {
         }
     }
 
+
+    @PostMapping(path = "/remove")
+    private ResponseEntity<?> remove(@RequestBody ProjectRequestDTO projectRequest) {
+        System.out.println("remove-------------------------");
+        try {
+
+            // Add project if it doesn't exist
+            String removed = projectSerevice.removeProject(projectRequest.getProjectId(), projectRequest.getUseremail());
+            System.out.println("removed error =" +removed);
+            if (Objects.equals(removed, "successfully removed")) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body("Project removed successfully.");
+            } else if(Objects.equals(removed, "You are not authorized to delete this project")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("only admin can delete project");
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("failed to remove project");
+            }
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
+        }
+    }
 }

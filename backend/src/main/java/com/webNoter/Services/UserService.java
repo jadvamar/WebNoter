@@ -18,11 +18,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String signupUser(UserDTO userDTO){
+    @Autowired
+    private OtpService otpService;
 
+    public String signupUser(UserDTO userDTO) {
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
 
-        if(existingUser.isPresent()){
+        if (existingUser.isPresent()) {
             throw new IllegalStateException("User with email " + userDTO.getEmail() + " already exists.");
         }
 
@@ -35,6 +37,37 @@ public class UserService {
         return userDTO.getName();
     }
 
+
+    public String updatePassword(String password , String email){
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty())return "user not found";
+
+        user.get().setPassword((this.passwordEncoder.encode(password)));
+        userRepository.save(user.get());
+        System.out.println("password updated");
+        return "password updated";
+    }
+
+    public String validate(String email){
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty())return "user not found";
+
+        String otp = otpService.generateOtp(email);
+        System.out.println("otp ----" + otp);
+        return "otp send successfully";
+    }
+
+    public boolean verifyOTp(String email , String otp){
+        return otpService.validateOtp(email,otp);
+    }
+
+    public String setPassword(String email,String password){
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty())return "user not found";
+
+        user.get().setPassword(this.passwordEncoder.encode(password));
+        return "suceesfully changed";
+    }
     public String getName(String email){
         Optional<User> existingUser = userRepository.findByEmail(email);
         if(existingUser.isPresent()){

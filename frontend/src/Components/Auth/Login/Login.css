@@ -19,7 +19,8 @@ body {
 
 .login-container h2 {
   margin-bottom: 20px;
-  text-align: center; /* Center align the heading */
+  text-align: center;
+  color: black; /* Center align the heading */
 }
 
 .login-container input {
@@ -30,6 +31,26 @@ body {
   border-radius: 4px;
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
   text-align: center; /* Center align the text inside the input box */
+}
+.newToZomato {
+  font-size: 14px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  cursor: pointer;
+}
+.extra-options {
+  font-size: 14px;
+  color: black;
+  cursor: pointer;
+}
+.createAcc {
+  margin: 0 10px;
+  text-decoration: none;
+  color: rgb(239, 79, 95);
+  cursor: pointer;
 }
 
 .login-container button {
@@ -72,7 +93,8 @@ body {
   position: absolute;
   top: 10px; /* Adjust as necessary */
   right: 10px; /* Adjust as necessary */
-  width: 13px; /* Adjust the size as necessary */
+  width: 13px;
+  height: 13px; /* Adjust the size as necessary */
   cursor: pointer;
 }
 

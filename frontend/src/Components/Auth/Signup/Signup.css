@@ -19,9 +19,23 @@ body {
 
 .signup-container h2 {
   margin-bottom: 20px;
-  text-align: center; /* Center align the heading */
+  text-align: center;
+  color: black; /* Center align the heading */
 }
-
+.newToZomato {
+  font-size: 14px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+.createAcc {
+  margin: 0 10px;
+  text-decoration: none;
+  color: rgb(239, 79, 95);
+  cursor: pointer;
+}
 .signup-container input {
   width: 100%; /* Ensure the input box takes full width of container */
   padding: 10px;

@@ -7,6 +7,8 @@ import Signup from "./Components/Auth/Signup/Signup";
 import Extension from "./Components/Extension/Extension";
 import Header from "./Components/header/header";
 import AddCandidate from "./Components/AddCandidate/AddCandidate";
+import MainContent from "./Components/MainSection/MainContent";
+import ProjectDetail from "./Components/ProjectDetail/ProjectDetail";
 import { UserProvider } from "./Components/Contexts/UserContext";
 function AppRoutes() {
   return (
@@ -18,6 +20,8 @@ function AppRoutes() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/Header" element={<Header />} />
         <Route path="/add" element={<AddCandidate />} />
+        <Route path="/detail" element={<ProjectDetail />} />
+        <Route path="/main" element={<MainContent />} />
       </Routes>
     </UserProvider>
   );

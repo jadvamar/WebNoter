@@ -46,7 +46,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(csrf -> csrf.disable())  // Disable CSRF for simplicity, especially useful for APIs
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // Frontend URL
+                    corsConfiguration.setAllowedOrigins(List.of("chrome-extension://<abcd1234efgh5678>","http://localhost:3000")); // Frontend URL
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(List.of("*"));
                     corsConfiguration.setAllowCredentials(true);
@@ -56,9 +56,28 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(
                                 "/user/signup",
                                 "/user/login",
+                                "/user/validateToken",
+                                "/user/forgot-password",
+                                "/user/verify-otp",
+                                "/user/reset-password",
+
                                 "/project/getProjects",
                                 "/project/addProject",
-                                "/user/validateToken"
+                                "/project/remove",
+
+                                "/subfolder/add",
+                                "/subfolder/{projectId}",
+                                "/subfolder/update",
+                                "/subfolder/remove/{subfolderId}",
+
+                                "/candidate/add",
+                                "/candidate/getEmails",
+                                "/candidate/remove",
+
+                                "/data/add",
+                                "/data/{subfolderId}",
+                                "/data/remove/{noteId}",
+                                "/data/update"
                         ).permitAll()  // Allow unauthenticated access to signup
                         .anyRequest().authenticated()  // Secure other endpoints
                 )

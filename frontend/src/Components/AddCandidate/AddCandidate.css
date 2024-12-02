@@ -16,12 +16,16 @@ h2 {
 }
 
 .email-list {
+  max-height: 160px; /* Set the maximum height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
   margin-bottom: 20px;
+  padding-right: 8px; /* Space for scrollbar */
 }
 
 .email-list ul {
   list-style-type: none;
   padding-left: 0;
+  margin: 0; /* Reset margin for better alignment */
 }
 
 .email-list li {
@@ -122,4 +126,13 @@ h2 {
   .remove-button {
     padding: 8px 12px;
   }
+}
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
 }

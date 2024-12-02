@@ -12,4 +12,6 @@ public interface ProjecRepository extends MongoRepository<Project,String> {
 
     List<Project> findAllById(Iterable<String> ids);
     boolean existsByProjectName(String name);
+    Optional<Project> findById(String id);
+    Optional<Project> findByProjectName(String name);
 }

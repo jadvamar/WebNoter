@@ -18,6 +18,13 @@ public interface UserRepository extends MongoRepository<User , String> {
     @Collation("en") // Set locale for sorting and comparison
     List<User> findByField(String field);
 
+    List<User> findByprojectId(String id);
+
+    @Query("{}, { $pull: { 'projectId': ?0 } }")  // Remove projectId from all users
+    void removeProjectIdFromAllUsers(String projectId);
+
+
+
 
 
 
